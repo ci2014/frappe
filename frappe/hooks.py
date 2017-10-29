@@ -139,7 +139,8 @@ scheduler_events = {
 		'frappe.model.utils.user_settings.sync_user_settings',
 		"frappe.utils.error.collect_error_snapshots",
 		"frappe.desk.page.backups.backups.delete_downloadable_backups",
-		"frappe.limits.update_space_usage"
+		"frappe.limits.update_space_usage",
+		"frappe.desk.doctype.todo.todo.update_overdue"
 	],
 	"daily": [
 		"frappe.email.queue.clear_outbox",
