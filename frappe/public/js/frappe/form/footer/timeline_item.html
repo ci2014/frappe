@@ -1,4 +1,4 @@
-<div class="media timeline-item {% if (data.user_content) { %} user-content {% } else { %} notification-content {% } %}" data-doctype="{{ data.doctype }}" data-name="{%= data.name %}">
+<div class="media timeline-item timeline-item-collapsible {% if (data.user_content) { %} user-content {% } else { %} notification-content {% } %}" data-doctype="{{ data.doctype }}" data-name="{%= data.name %}">
 	{% if (data.user_content) { %}
 	<span class="pull-left avatar avatar-medium hidden-xs" style="margin-top: 1px">
 		{% if(data.user_info.image) { %}
@@ -27,6 +27,7 @@
 					</span>
 				</div>
 				{% } %}
+
 			</div>
 			{% if(data.communication_type==="Communication"
 				|| data.communication_type==="Feedback"
@@ -56,6 +57,10 @@
 							</a>
 						{% } %}
 					</span>
+
+		                        <a class="text-muted collapse-link pull-right" data-toggle="collapse" href="#{{ data.doctype }}-{%= data.name  %}-content">
+                                                <i class="fa fa-angle-down"></i>
+                                        </a>
 						{% if(in_list(["Communication", "Feedback"], data.communication_type)) { %}
 							{% if (frappe.model.can_read(\'Communication\')) { %}
 							<a href="#Form/{%= data.doctype %}/{%= data.name %}"
@@ -94,6 +99,7 @@
 								data-name="{%= data.name %}" title="{%= __("Reply") %}">{%= __("Reply") %}</a>
 							{% } %}
 						{% } %}
+
 					<span class="text-muted commented-on hidden-xs">
 						&ndash; {%= data.comment_on %}</span>
 					<span class="text-muted commented-on-small">
@@ -111,7 +117,7 @@
 					</span>
 				</div>
 			</div>
-			<div class="reply timeline-content-show">
+			<div class="reply timeline-content-show collapse" id="{{ data.doctype }}-{%= data.name  %}-content">
 				<div class="timeline-item-content">
 					{% if data.show_subject %}
 						<p class="text-muted small">
