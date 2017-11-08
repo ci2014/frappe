@@ -255,7 +255,6 @@ def get_link_for_qrcode(user, totp_uri):
 
 def send_token_via_sms(otpsecret, token=None, phone_no=None):
 	'''Send token as sms to user.'''
-	otp_issuer = frappe.db.get_value('System Settings', 'System Settings', 'otp_issuer_name')
 	try:
 		from frappe.core.doctype.sms_settings.sms_settings import send_request
 	except:
@@ -270,7 +269,6 @@ def send_token_via_sms(otpsecret, token=None, phone_no=None):
 
 	hotp = pyotp.HOTP(otpsecret)
 	args = {
-		ss.sms_sender_name: otp_issuer,
 		ss.message_parameter: 'Your verification code is {}'.format(hotp.at(int(token)))
 	}
 
@@ -281,7 +279,8 @@ def send_token_via_sms(otpsecret, token=None, phone_no=None):
 
 	sms_args = {
 		'params': args,
-		'gateway_url': ss.sms_gateway_url
+		'gateway_url': ss.sms_gateway_url,
+		'use_post': ss.use_post
 	}
 	enqueue(method=send_request, queue='short', timeout=300, event=None,
 		async=True, job_name=None, now=False, **sms_args)

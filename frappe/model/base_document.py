@@ -316,7 +316,6 @@ class BaseDocument(object):
 					raise
 			else:
 				raise
-
 		self.set("__islocal", False)
 
 	def db_update(self):
@@ -528,6 +527,10 @@ class BaseDocument(object):
 
 	def _validate_length(self):
 		if frappe.flags.in_install:
+			return
+
+		if self.meta.issingle:
+			# single doctype value type is mediumtext
 			return
 
 		for fieldname, value in iteritems(self.get_valid_dict()):

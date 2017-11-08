@@ -14,6 +14,7 @@ from num2words import num2words
 from six.moves import html_parser as HTMLParser
 from six.moves.urllib.parse import quote, urljoin
 from html2text import html2text
+from markdown2 import markdown, MarkdownError
 from six import iteritems, text_type, string_types, integer_types
 
 DATE_FORMAT = "%Y-%m-%d"
@@ -218,7 +219,11 @@ def formatdate(string_date=None, format_string=None):
 		 * mm-dd-yyyy
 		 * dd/mm/yyyy
 	"""
-	date = getdate(string_date) if string_date else now_datetime().date()
+
+	if not string_date:
+		return ''
+
+	date = getdate(string_date)
 	if not format_string:
 		format_string = get_user_format().replace("mm", "MM")
 
@@ -777,6 +782,16 @@ def make_filter_tuple(doctype, key, value):
 	else:
 		return [doctype, key, "=", value]
 
+def make_filter_dict(filters):
+	'''convert this [[doctype, key, operator, value], ..]
+	to this { key: (operator, value), .. }
+	'''
+	_filter = frappe._dict()
+	for f in filters:
+		_filter[f[1]] = (f[2], f[3])
+
+	return _filter
+
 def scrub_urls(html):
 	html = expand_relative_urls(html)
 	# encoding should be responsibility of the composer
@@ -840,3 +855,19 @@ def to_markdown(html):
 		pass
 
 	return text
+
+def to_html(markdown_text):
+	html = None
+	try:
+		html = markdown(markdown_text)
+	except MarkdownError:
+		pass
+
+	return html
+
+def get_source_value(source, key):
+	'''Get value from source (object or dict) based on key'''
+	if isinstance(source, dict):
+		return source.get(key)
+	else:
+		return getattr(source, key)
