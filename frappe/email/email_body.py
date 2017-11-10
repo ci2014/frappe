@@ -72,6 +72,7 @@ class EMail:
 		self.msg_alternative = MIMEMultipart('alternative')
 		self.msg_root.attach(self.msg_alternative)
 		self.cc = cc or []
+		self.bcc = bcc or []
 		self.html_set = False
 
 		self.email_account = email_account or get_outgoing_email_account(sender=sender)
