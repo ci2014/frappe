@@ -117,6 +117,7 @@ def notify(doc, print_html=None, print_format=None, attachments=None,
 	:param attachments: A list of filenames that should be attached when sending this email
 	:param recipients: Email recipients
 	:param cc: Send email as CC to
+	:param bcc: Send email as BCC to
 	:param fetched_from_email_account: True when pulling email, the notification shouldn't go to the main recipient
 
 	"""
