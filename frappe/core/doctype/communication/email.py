@@ -117,10 +117,11 @@ def notify(doc, print_html=None, print_format=None, attachments=None,
 	:param attachments: A list of filenames that should be attached when sending this email
 	:param recipients: Email recipients
 	:param cc: Send email as CC to
+	:param bcc: Send email as BCC to
 	:param fetched_from_email_account: True when pulling email, the notification shouldn't go to the main recipient
 
 	"""
-	recipients, cc = get_recipients_and_cc_and_bcc(doc, recipients, cc, bcc,
+	recipients, cc, bcc = get_recipients_cc_and_bcc(doc, recipients, cc, bcc,
 		fetched_from_email_account=fetched_from_email_account)
 
 	if not recipients:
@@ -131,7 +132,7 @@ def notify(doc, print_html=None, print_format=None, attachments=None,
 	if frappe.flags.in_test:
 		# for test cases, run synchronously
 		doc._notify(print_html=print_html, print_format=print_format, attachments=attachments,
-			recipients=recipients, cc=cc, bcc=bcc)
+			recipients=recipients, cc=cc, bcc=None)
 	else:
 		check_email_limit(list(set(doc.sent_email_addresses)))
 		enqueue(sendmail, queue="default", timeout=300, event="sendmail",
@@ -195,7 +196,7 @@ def update_parent_mins_to_first_response(doc):
 	parent.run_method('notify_communication', doc)
 	parent.notify_update()
 
-def get_recipients_and_cc_and_bcc(doc, recipients, cc, bcc, fetched_from_email_account=False):
+def get_recipients_cc_and_bcc(doc, recipients, cc, bcc, fetched_from_email_account=False):
 	doc.all_email_addresses = []
 	doc.sent_email_addresses = []
 	doc.previous_email_sender = None

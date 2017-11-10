@@ -72,6 +72,7 @@ class EMail:
 		self.msg_alternative = MIMEMultipart('alternative')
 		self.msg_root.attach(self.msg_alternative)
 		self.cc = cc or []
+		self.bcc = bcc or []
 		self.html_set = False
 
 		self.email_account = email_account or get_outgoing_email_account(sender=sender)
@@ -176,6 +177,7 @@ class EMail:
 
 		self.recipients = [strip(r) for r in self.recipients]
 		self.cc = [strip(r) for r in self.cc]
+		self.bcc = [strip(r) for r in self.bcc]
 
 		for e in self.recipients + (self.cc or []) + (self.bcc or []):
 			validate_email_add(e, True)
