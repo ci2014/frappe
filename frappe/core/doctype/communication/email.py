@@ -121,7 +121,11 @@ def notify(doc, print_html=None, print_format=None, attachments=None,
 	:param fetched_from_email_account: True when pulling email, the notification shouldn't go to the main recipient
 
 	"""
+<<<<<<< HEAD
 	recipients, cc, bcc = get_recipients_cc_and_bcc(doc, recipients, cc, bcc,
+=======
+	recipients, cc, bcc = get_recipients_and_cc_and_bcc(doc, recipients, cc, bcc,
+>>>>>>> 8fefa8b8529831327f09c380937bee96b447195c
 		fetched_from_email_account=fetched_from_email_account)
 
 	if not recipients:
