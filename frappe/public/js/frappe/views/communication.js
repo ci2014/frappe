@@ -449,7 +449,7 @@ frappe.views.CommunicationComposer = Class.extend({
 			var df = this.dialog.fields[i];
 
 			if ( df.is_cc_checkbox ) {
-				// concat in cc
+				// concat in cc and bcc
 				if ( form_values[df.fieldname] ) {
 					form_values.cc = ( form_values.cc ? (form_values.cc + ", ") : "" ) + df.fieldname;
 					form_values.bcc = ( form_values.bcc ? (form_values.bcc + ", ") : "" ) + df.fieldname;
