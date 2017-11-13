@@ -107,9 +107,7 @@ def update_overdue():
 	for todo in todos:
 		if todo.get('date'):
 			if get_datetime(today) >= get_datetime(todo.get('date')):
-				doc = frappe.get_doc('ToDo', todo.get('name'))
-				doc.status = 'Overdue'
-				doc.save()
+				frappe.db.set_value('ToDo', todo.get('name'), 'status', 'Overdue')
 
 	frappe.db.commit()
 	
