@@ -25,7 +25,7 @@ frappe.ui.form.ControlInput = frappe.ui.form.Control.extend({
 				</div>\
 			</div>').appendTo(this.parent);
 		}
-
+		
 	},
 	toggle_label: function(show) {
 		this.$wrapper.find(".control-label").toggleClass("hide", !show);

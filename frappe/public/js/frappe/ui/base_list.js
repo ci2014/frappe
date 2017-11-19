@@ -38,7 +38,7 @@ frappe.ui.BaseList = Class.extend({
 		if (opts) {
 			this.make();
 		}
-	},
+	},	
 	set_defaults: function () {
 		this.page_length = 20;
 		this.start = 0;
