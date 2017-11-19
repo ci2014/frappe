@@ -48,9 +48,8 @@ frappe.views.CommunicationComposer = Class.extend({
 	get_fields: function() {
 		var fields= [
 			{label:__("To"), fieldtype:"Data", reqd: 0, fieldname:"recipients",length:524288},
-			{fieldtype: "Section Break", collapsible: 1, label: __("CC, BCC & Standard Reply")},
+			{fieldtype: "Section Break", collapsible: 1, label: __("CC & Standard Reply")},
 			{label:__("CC"), fieldtype:"Data", fieldname:"cc", length:524288},
-			{label:__("BCC"), fieldtype:"Data", fieldname:"bcc", length:524288},
 			{label:__("Standard Reply"), fieldtype:"Link", options:"Standard Reply",
 				fieldname:"standard_reply"},
 			{fieldtype: "Section Break"},
@@ -110,7 +109,6 @@ frappe.views.CommunicationComposer = Class.extend({
 
 		this.dialog.fields_dict.recipients.set_value(this.recipients || '');
 		this.dialog.fields_dict.cc.set_value(this.cc || '');
-		this.dialog.fields_dict.bcc.set_value(this.bcc || '');
 
 		if(this.dialog.fields_dict.sender) {
 			this.dialog.fields_dict.sender.set_value(this.sender || '');
@@ -125,7 +123,6 @@ frappe.views.CommunicationComposer = Class.extend({
 		if(!this.forward && !this.recipients && this.last_email) {
 			this.recipients = this.last_email.sender;
 			this.cc = this.last_email.cc;
-			this.bcc = this.last_email.bcc;
 		}
 
 		if(!this.forward && !this.recipients) {
@@ -363,6 +360,13 @@ frappe.views.CommunicationComposer = Class.extend({
 		}
 
 		if(files.length) {
+			var wrapper = $(fields.select_attachments.wrapper);
+
+			// find already checked items
+			var checked_items = wrapper.find('[data-file-name]:checked').map(function() {
+				return $(this).attr("data-file-name");
+			});
+
 			$.each(files, function(i, f) {
 				if (!f.file_name) return;
 				f.file_url = frappe.urllib.get_full_url(f.file_url);
@@ -373,7 +377,15 @@ frappe.views.CommunicationComposer = Class.extend({
 					+	' <a href="%(file_url)s" target="_blank" class="text-muted small">'
 					+		'<i class="fa fa-share" style="vertical-align: middle; margin-left: 3px;"></i>'
 					+ '</label></p>', f))
-					.appendTo(attach)
+					.appendTo(attach);
+
+				if (f.checked) {
+					checked_items.push(f.name);
+				}
+			});
+
+			$.each(checked_items, function(i, filename) {
+				wrapper.find('[data-file-name="'+ filename +'"]').prop("checked", true);
 			});
 		}
 	},
@@ -449,10 +461,9 @@ frappe.views.CommunicationComposer = Class.extend({
 			var df = this.dialog.fields[i];
 
 			if ( df.is_cc_checkbox ) {
-				// concat in cc and bcc
+				// concat in cc
 				if ( form_values[df.fieldname] ) {
 					form_values.cc = ( form_values.cc ? (form_values.cc + ", ") : "" ) + df.fieldname;
-					form_values.bcc = ( form_values.bcc ? (form_values.bcc + ", ") : "" ) + df.fieldname;
 				}
 
 				delete form_values[df.fieldname];
@@ -491,7 +502,6 @@ frappe.views.CommunicationComposer = Class.extend({
 			args: {
 				recipients: form_values.recipients,
 				cc: form_values.cc,
-				bcc: form_values.bcc,
 				subject: form_values.subject,
 				content: form_values.content,
 				doctype: me.doc.doctype,
@@ -602,8 +612,7 @@ frappe.views.CommunicationComposer = Class.extend({
 		var me = this;
 		[
 			this.dialog.fields_dict.recipients.input,
-			this.dialog.fields_dict.cc.input,
-			this.dialog.fields_dict.bcc.input
+			this.dialog.fields_dict.cc.input
 		].map(function(input) {
 			me.setup_awesomplete_for_input(input);
 		});
