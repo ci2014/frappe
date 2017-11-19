@@ -13,7 +13,7 @@ frappe.ui.form.ControlData = frappe.ui.form.ControlInput.extend({
 		if (this.df.fieldname == 'name') {
 			$('<span class="input-group-addon"><i class="octicon octicon-search text-muted small"></i></span>').prependTo(this.input_area);
 		}
-		
+
 		if (in_list(['Data', 'Link', 'Dynamic Link', 'Password', 'Select', 'Read Only', 'Attach', 'Attach Image'],
 			this.df.fieldtype)) {
 			this.$input.attr("maxlength", this.df.length || 140);
