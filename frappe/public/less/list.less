@@ -45,12 +45,15 @@
 
 .set-filters .btn-group {
 	margin-right: 10px;
+	white-space: nowrap;
+	font-size: 0;
 }
 
 .set-filters .btn-group .btn-default {
 	background-color: transparent;
 	border: 1px solid @border-color;
 	color: @text-muted;
+	float: none;
 }
 
 .filter-box {
@@ -229,23 +232,6 @@
 .listview-main-section {
 	.octicon-heart {
 		cursor: pointer;
-	}
-	.page-form {
-		padding-left: 17px;
-
-		@media (max-width: @screen-sm) {
-			padding-left: 25px;
-		}
-
-		.octicon-search {
-		    float: left;
-		    padding-top: 7px;
-		    margin-left: -4px;
-		    margin-right: -4px;
-			@media (max-width: @screen-sm) {
-				margin-left: -12px;
-			}
-		}
 	}
 }
 

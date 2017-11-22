@@ -84,6 +84,15 @@ class EmailAccount(Document):
 			if self.append_to not in valid_doctypes:
 				frappe.throw(_("Append To can be one of {0}").format(comma_or(valid_doctypes)))
 
+			self.validate_condition()
+		
+	def validate_condition(self):
+		if self.condition:
+			try:
+				frappe.safe_eval(self.condition, None, None)
+			except:
+				frappe.throw(_("The condition '{0}' is invalid").format(self.condition))
+				
 	def on_update(self):
 		"""Check there is only one default of each type."""
 		from frappe.core.doctype.user.user import ask_pass_update, setup_user_email_inbox
@@ -415,6 +424,12 @@ class EmailAccount(Document):
 
 		parent = self.find_parent_from_in_reply_to(communication, email)
 
+		try:
+			if not frappe.safe_eval(self.condition, None, get_context(communication)):
+				self.append_to = None
+		except:
+			pass
+		
 		if not parent and self.append_to:
 			self.set_sender_field_and_subject_field()
 
@@ -457,8 +472,8 @@ class EmailAccount(Document):
 				# try and match by subject and sender
 				# if sent by same sender with same subject,
 				# append it to old coversation
-				subject = frappe.as_unicode(strip(re.sub("(^\s*(Fw|FW|fwd)[^:]*:|\s*(Re|RE)[^:]*:\s*)*",
-					"", email.subject)))
+				subject = frappe.as_unicode(strip(re.sub("(^\s*(fw|fwd|wg)[^:]*:|\s*(re|aw)[^:]*:\s*)*",
+					"", email.subject, 0, flags=re.IGNORECASE)))
 
 				parent = frappe.db.get_all(self.append_to, filters={
 					self.sender_field: email.from_email,
@@ -721,3 +736,6 @@ def get_max_email_uid(email_account):
 	else:
 		max_uid = int(result[0].get("uid", 0)) + 1
 		return max_uid
+
+def get_context(doc):
+	return { "doc": doc }

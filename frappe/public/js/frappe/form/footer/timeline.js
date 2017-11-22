@@ -27,6 +27,7 @@ frappe.ui.form.Timeline = Class.extend({
 		this.setup_editing_area();
 
 		this.setup_email_button();
+		this.setup_collapse_button();
 
 		this.list.on("click", ".toggle-blockquote", function() {
 			$(this).parent().siblings("blockquote").toggleClass("hidden");
@@ -51,6 +52,10 @@ frappe.ui.form.Timeline = Class.extend({
 							var communications = me.get_communications().concat(new_communications);
 							frappe.model.set_docinfo(me.frm.doc.doctype, me.frm.doc.name, "communications", communications);
 
+							if (new_communications.length < 20) {
+								me.more = false;
+							}
+							
 						} else {
 							me.more = false;
 						}
@@ -90,6 +95,14 @@ frappe.ui.form.Timeline = Class.extend({
 			});
 	},
 
+	setup_collapse_button: function() {
+		var me = this;
+		this.collapse_button = this.wrapper.find('.btn-collapse-all')
+			.on("click", function() {
+				$('.timeline-item-collapsible .collapse').collapse('toggle');
+			});
+	},
+
 	setup_editing_area: function() {
 		this.$editing_area = $('<div class="timeline-editing-area">');
 
@@ -126,7 +139,7 @@ frappe.ui.form.Timeline = Class.extend({
 			});
 
 		// more btn
-		if (this.more===undefined && communications.length===20) {
+		if (this.more===undefined && communications.length) {
 			this.more = true;
 		}
 

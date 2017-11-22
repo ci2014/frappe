@@ -25,6 +25,7 @@ frappe.ui.form.ControlInput = frappe.ui.form.Control.extend({
 				</div>\
 			</div>').appendTo(this.parent);
 		}
+
 	},
 	toggle_label: function(show) {
 		this.$wrapper.find(".control-label").toggleClass("hide", !show);
@@ -35,6 +36,11 @@ frappe.ui.form.ControlInput = frappe.ui.form.Control.extend({
 	set_input_areas: function() {
 		if(this.only_input) {
 			this.input_area = this.wrapper;
+
+			if (this.df.fieldname == 'name') {
+				this.input_area = $('<div class="input-group">').appendTo(this.wrapper);
+			}
+
 		} else {
 			this.label_area = this.label_span = this.$wrapper.find("label").get(0);
 			this.input_area = this.$wrapper.find(".control-input").get(0);

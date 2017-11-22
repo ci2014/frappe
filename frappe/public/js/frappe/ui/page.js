@@ -430,6 +430,7 @@ frappe.ui.Page = Class.extend({
 			only_input: df.fieldtype=="Check" ? false : true,
 		})
 		f.refresh();
+
 		$(f.wrapper)
 			.addClass('col-md-2')
 			.attr("title", __(df.label)).tooltip();
@@ -457,6 +458,7 @@ frappe.ui.Page = Class.extend({
 		if(df["default"])
 			f.set_input(df["default"])
 		this.fields_dict[df.fieldname || df.label] = f;
+		console.log(f);
 		return f;
 	},
 	show_form: function() {

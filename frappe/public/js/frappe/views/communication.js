@@ -351,12 +351,22 @@ frappe.views.CommunicationComposer = Class.extend({
 		var fields = this.dialog.fields_dict;
 		var attach = $(fields.select_attachments.wrapper).find(".attach-list").empty();
 
-		if (cur_frm){
+		if (undefined !== this.attachments && this.attachments.length) {
+			var files = this.attachments;
+		} else if (cur_frm) {
 			var files = cur_frm.get_files();
-		}else {
-			var files = this.attachments
+		} else {
+			var files = [];
 		}
+
 		if(files.length) {
+			var wrapper = $(fields.select_attachments.wrapper);
+
+			// find already checked items
+			var checked_items = wrapper.find('[data-file-name]:checked').map(function() {
+				return $(this).attr("data-file-name");
+			});
+
 			$.each(files, function(i, f) {
 				if (!f.file_name) return;
 				f.file_url = frappe.urllib.get_full_url(f.file_url);
@@ -367,7 +377,15 @@ frappe.views.CommunicationComposer = Class.extend({
 					+	' <a href="%(file_url)s" target="_blank" class="text-muted small">'
 					+		'<i class="fa fa-share" style="vertical-align: middle; margin-left: 3px;"></i>'
 					+ '</label></p>', f))
-					.appendTo(attach)
+					.appendTo(attach);
+
+				if (f.checked) {
+					checked_items.push(f.name);
+				}
+			});
+
+			$.each(checked_items, function(i, filename) {
+				wrapper.find('[data-file-name="'+ filename +'"]').prop("checked", true);
 			});
 		}
 	},

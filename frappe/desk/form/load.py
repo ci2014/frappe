@@ -94,7 +94,8 @@ def get_docinfo(doc=None, doctype=None, name=None):
 	frappe.response["docinfo"] = {
 		"attachments": get_attachments(doc.doctype, doc.name),
 		"communications": _get_communications(doc.doctype, doc.name),
-		'versions': get_versions(doc),
+		"total_comments": len(json.loads(doc.get('_comments') or '[]')),
+		"versions": get_versions(doc),
 		"assignments": get_assignments(doc.doctype, doc.name),
 		"permissions": get_doc_permissions(doc),
 		"shared": frappe.share.get_users(doc.doctype, doc.name),
@@ -170,14 +171,14 @@ def get_communication_data(doctype, name, start=0, limit=20, after=None, fields=
 		where {conditions} {group_by}
 		order by creation desc limit %(start)s, %(limit)s""".format(
 			fields = fields, conditions=conditions, group_by=group_by or ""),
-			{ "doctype": doctype, "name": name, "start": frappe.utils.cint(start), "limit": limit },
+			{ "doctype": doctype, "name": name, "start": frappe.utils.cint(start), "limit": frappe.utils.cint(limit) },
 			as_dict=as_dict)
 
 	return communications
 
 def get_assignments(dt, dn):
 	cl = frappe.db.sql("""select name, owner, description from `tabToDo`
-		where reference_type=%(doctype)s and reference_name=%(name)s and status="Open"
+		where reference_type=%(doctype)s and reference_name=%(name)s and status in ("Open","Overdue")
 		order by modified desc limit 5""", {
 			"doctype": dt,
 			"name": dn
