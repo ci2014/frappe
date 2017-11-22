@@ -15,7 +15,11 @@
  "engine": "InnoDB", 
  "fields": [
   {
+<<<<<<< HEAD
+   "allow_bulk_edit": 0,
+=======
    "allow_bulk_edit": 0, 
+>>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
    "allow_on_submit": 0, 
    "bold": 0, 
    "collapsible": 0, 
@@ -44,7 +48,11 @@
    "unique": 0
   }, 
   {
+<<<<<<< HEAD
+   "allow_bulk_edit": 0,
+=======
    "allow_bulk_edit": 0, 
+>>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
    "allow_on_submit": 0, 
    "bold": 0, 
    "collapsible": 1, 
@@ -75,7 +83,11 @@
    "unique": 0
   }, 
   {
+<<<<<<< HEAD
+   "allow_bulk_edit": 0,
+=======
    "allow_bulk_edit": 0, 
+>>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
    "allow_on_submit": 0, 
    "bold": 0, 
    "collapsible": 0, 
@@ -107,7 +119,11 @@
    "unique": 0
   }, 
   {
+<<<<<<< HEAD
    "allow_bulk_edit": 0,
+=======
+   "allow_bulk_edit": 0, 
+>>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
    "allow_on_submit": 0, 
    "bold": 0, 
    "collapsible": 0, 
@@ -138,7 +154,11 @@
    "unique": 0
   }, 
   {
+<<<<<<< HEAD
+   "allow_bulk_edit": 0,
+=======
    "allow_bulk_edit": 0, 
+>>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
    "allow_on_submit": 0, 
    "bold": 0, 
    "collapsible": 0, 
@@ -167,7 +187,11 @@
    "unique": 0
   }, 
   {
+<<<<<<< HEAD
+   "allow_bulk_edit": 0,
+=======
    "allow_bulk_edit": 0, 
+>>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
    "allow_on_submit": 0, 
    "bold": 0, 
    "collapsible": 0, 
@@ -198,7 +222,11 @@
    "unique": 0
   }, 
   {
+<<<<<<< HEAD
    "allow_bulk_edit": 0,
+=======
+   "allow_bulk_edit": 0, 
+>>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
    "allow_on_submit": 0, 
    "bold": 0, 
    "collapsible": 0, 
@@ -262,6 +290,9 @@
     "unique": 0
    },
   {
+<<<<<<< HEAD
+   "allow_bulk_edit": 0,
+=======
    "allow_bulk_edit": 0, 
    "allow_on_submit": 0, 
    "bold": 0, 
@@ -295,6 +326,7 @@
   }, 
   {
    "allow_bulk_edit": 0, 
+>>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
    "allow_on_submit": 0, 
    "bold": 0, 
    "collapsible": 0, 
