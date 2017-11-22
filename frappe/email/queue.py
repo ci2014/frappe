@@ -63,11 +63,7 @@ def send(recipients=None, sender=None, subject=None, message=None, text_content=
 
 	if isinstance(bcc, string_types):
 		bcc = split_emails(bcc)
-<<<<<<< HEAD
-		
-=======
 
->>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
 	if isinstance(send_after, int):
 		send_after = add_days(nowdate(), send_after)
 
@@ -119,11 +115,7 @@ def send(recipients=None, sender=None, subject=None, message=None, text_content=
 		attachments=attachments,
 		reply_to=reply_to,
 		cc=cc,
-<<<<<<< HEAD
-	    	bcc=bcc,
-=======
 		bcc=bcc,
->>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
 		message_id=message_id,
 		in_reply_to=in_reply_to,
 		send_after=send_after,

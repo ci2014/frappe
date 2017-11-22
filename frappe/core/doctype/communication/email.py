@@ -105,11 +105,7 @@ def validate_email(doc):
 
 	for email in split_emails(doc.bcc):
 		validate_email_add(email, throw=True)
-<<<<<<< HEAD
-		
-=======
 
->>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
 	# validate sender
 
 def notify(doc, print_html=None, print_format=None, attachments=None,
@@ -213,11 +209,7 @@ def get_recipients_cc_and_bcc(doc, recipients, cc, bcc, fetched_from_email_accou
 
 	if not bcc:
 		bcc = get_bcc(doc, recipients, fetched_from_email_account=fetched_from_email_account)
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
 	if fetched_from_email_account:
 		# email was already sent to the original recipient by the sender's email service
 		original_recipients, recipients = recipients, []
@@ -235,11 +227,7 @@ def get_recipients_cc_and_bcc(doc, recipients, cc, bcc, fetched_from_email_accou
 
 		original_bcc = split_emails(doc.bcc)
 		bcc = list(set(bcc) - set(original_bcc) - set(original_recipients))
-<<<<<<< HEAD
-		
-=======
 
->>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
 	if 'Administrator' in recipients:
 		recipients.remove('Administrator')
 
@@ -438,11 +426,7 @@ def filter_email_list(doc, email_list, exclude, is_cc=False, is_bcc=False):
 			is_user_enabled = frappe.db.get_value("User", email_address, "enabled")
 			if is_user_enabled==0:
 				continue
-<<<<<<< HEAD
-				
-=======
-
->>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
+		
 		# make sure of case-insensitive uniqueness of email address
 		if email_address not in email_address_list:
 			# append the full email i.e. "Human <human@example.com>"
