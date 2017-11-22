@@ -189,11 +189,7 @@ class Communication(Document):
 		self.notify(print_html, print_format, attachments, recipients)
 
 	def notify(self, print_html=None, print_format=None, attachments=None,
-<<<<<<< HEAD
 		recipients=None, cc=None, bcc=None, fetched_from_email_account=False):
-=======
-		recipients=None, cc=None, bcc=None,fetched_from_email_account=False):
->>>>>>> 63e1d702e31dc333fc824a15931196dc2400aba8
 		"""Calls a delayed task 'sendmail' that enqueus email in Email Queue queue
 
 		:param print_html: Send given value as HTML attachment
