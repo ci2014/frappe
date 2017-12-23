@@ -6,6 +6,7 @@
 
 {% if data.changed && data.changed.length %}
 <h4>{{ __("Values Changed") }}</h4>
+<div class="table-responsive">
 <table class="table table-bordered">
 	<thead>
 		<tr>
@@ -24,6 +25,7 @@
 		{% endif %}
 	</tbody>
 </table>
+</div>
 {% endif %}
 
 {% var _keys = ["added", "removed"]; %}
@@ -31,6 +33,7 @@
 	{% if data[key] && data[key].length %}
 	{% var title = key==="added" ? __("Rows Added") : __("Rows Removed"); %}
 	<h3>{{ title }}</h3>
+	<div class="table-responsive">
 	<table class="table table-bordered">
 		<thead>
 			<tr>
@@ -61,12 +64,13 @@
 			{% endif %}
 		</tbody>
 	</table>
-
+	</div>
 	{% endif %}
 {% endfor %}
 
 {% if data.row_changed && data.row_changed.length %}
 <h4>{{ __("Row Values Changed") }}</h4>
+<div class="table-responsive">
 <table class="table table-bordered">
 	<thead>
 		<tr>
@@ -92,5 +96,7 @@
 			{% endfor %}
 		{% endfor %}
 	</tbody>
+</table>
+</div>
 {% endif %}
 </div>
