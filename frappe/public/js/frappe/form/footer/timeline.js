@@ -55,7 +55,6 @@ frappe.ui.form.Timeline = Class.extend({
 							if (new_communications.length < 20) {
 								me.more = false;
 							}
-							
 						} else {
 							me.more = false;
 						}
@@ -621,15 +620,10 @@ frappe.ui.form.Timeline = Class.extend({
 	 */
 	update_comment: function(name, content)
 	{
-		// TODO: is there a frappe.client.update function?
 		return frappe.call({
-			method: 'frappe.client.set_value',
-			args: {
-				doctype: 'Communication',
-				name: name,
-				fieldname: 'content',
-				value: content,
-			}, callback: function(r) {
+			method: 'frappe.desk.form.utils.update_comment',
+			args: { name, content },
+			callback: function(r) {
 				if(!r.exc) {
 					frappe.utils.play_sound('click');
 				}

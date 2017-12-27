@@ -7,6 +7,7 @@ from six import string_types
 import frappe
 import json
 from email.utils import formataddr
+from frappe.core.utils import get_parent_doc
 from frappe.utils import (get_url, get_formatted_email, cint,
 	validate_email_add, split_emails, time_diff_in_seconds, parse_addr)
 from frappe.utils.file_manager import get_file
@@ -14,10 +15,13 @@ from frappe.email.queue import check_email_limit
 from frappe.utils.scheduler import log
 from frappe.email.email_body import get_message_id
 import frappe.email.smtp
-import MySQLdb
 import time
 from frappe import _
 from frappe.utils.background_jobs import enqueue
+
+# imports - third-party imports
+import pymysql
+from pymysql.constants import ER
 
 @frappe.whitelist()
 def make(doctype=None, name=None, content=None, subject=None, sent_or_received = "Sent",
@@ -172,7 +176,8 @@ def _notify(doc, print_html=None, print_format=None, attachments=None,
 
 def update_parent_mins_to_first_response(doc):
 	"""Update mins_to_first_communication of parent document based on who is replying."""
-	parent = doc.get_parent_doc()
+
+	parent = get_parent_doc(doc)
 	if not parent:
 		return
 
@@ -209,7 +214,7 @@ def get_recipients_cc_and_bcc(doc, recipients, cc, bcc, fetched_from_email_accou
 
 	if not bcc:
 		bcc = get_bcc(doc, recipients, fetched_from_email_account=fetched_from_email_account)
-		
+	
 	if fetched_from_email_account:
 		# email was already sent to the original recipient by the sender's email service
 		original_recipients, recipients = recipients, []
@@ -259,8 +264,8 @@ def prepare_to_notify(doc, print_html=None, print_format=None, attachments=None)
 	doc.attachments = []
 
 	if print_html or print_format:
-		doc.attachments.append(frappe.attach_print(doc.reference_doctype, doc.reference_name,
-			print_format=print_format, html=print_html))
+		doc.attachments.append({"print_format_attachment":1, "doctype":doc.reference_doctype,
+			"name":doc.reference_name, "print_format":print_format, "html":print_html})
 
 	if attachments:
 		if isinstance(attachments, string_types):
@@ -270,8 +275,11 @@ def prepare_to_notify(doc, print_html=None, print_format=None, attachments=None)
 			if isinstance(a, string_types):
 				# is it a filename?
 				try:
+					# keep this for error handling
 					file = get_file(a)
-					doc.attachments.append({"fname": file[0], "fcontent": file[1]})
+					# these attachments will be attached on-demand
+					# and won't be stored in the message
+					doc.attachments.append({"fid": a})
 				except IOError:
 					frappe.throw(_("Unable to find attachment {0}").format(a))
 			else:
@@ -297,15 +305,15 @@ def set_incoming_outgoing_accounts(doc):
 			{"default_incoming": 1, "enable_incoming": 1},  "email_id")
 
 	if not doc.outgoing_email_account:
-		doc.outgoing_email_account = frappe.db.get_value("Email Account",
-			{"default_outgoing": 1, "enable_outgoing": 1},
-			["email_id", "always_use_account_email_id_as_sender", "name", "send_unsubscribe_message"],as_dict=True) or frappe._dict()
-
-	if not doc.outgoing_email_account:
 		# if from address is not the default email account
 		doc.outgoing_email_account = frappe.db.get_value("Email Account",
 			{"email_id": doc.sender, "enable_outgoing": 1},
 			["email_id", "always_use_account_email_id_as_sender", "name", "send_unsubscribe_message"], as_dict=True) or frappe._dict()
+
+	if not doc.outgoing_email_account:
+		doc.outgoing_email_account = frappe.db.get_value("Email Account",
+			{"default_outgoing": 1, "enable_outgoing": 1},
+			["email_id", "always_use_account_email_id_as_sender", "name", "send_unsubscribe_message"],as_dict=True) or frappe._dict()
 
 	if doc.sent_or_received == "Sent":
 		doc.db_set("email_account", doc.outgoing_email_account.name)
@@ -438,7 +446,7 @@ def filter_email_list(doc, email_list, exclude, is_cc=False, is_bcc=False):
 	return filtered
 
 def get_owner_email(doc):
-	owner = doc.get_parent_doc().owner
+	owner = get_parent_doc(doc).owner
 	return get_formatted_email(owner) or owner
 
 def get_assignees(doc):
@@ -457,7 +465,7 @@ def get_attach_link(doc, print_format):
 		"doctype": doc.reference_doctype,
 		"name": doc.reference_name,
 		"print_format": print_format,
-		"key": doc.get_parent_doc().get_signature()
+		"key": get_parent_doc(doc).get_signature()
 	})
 
 def sendmail(communication_name, print_html=None, print_format=None, attachments=None,
@@ -479,9 +487,9 @@ def sendmail(communication_name, print_html=None, print_format=None, attachments
 				communication._notify(print_html=print_html, print_format=print_format, attachments=attachments,
 					recipients=recipients, cc=cc, bcc=bcc)
 
-			except MySQLdb.OperationalError as e:
+			except pymysql.InternalError as e:
 				# deadlock, try again
-				if e.args[0]==1213:
+				if e.args[0] == ER.LOCK_DEADLOCK:
 					frappe.db.rollback()
 					time.sleep(1)
 					continue
