@@ -214,7 +214,7 @@ def get_recipients_cc_and_bcc(doc, recipients, cc, bcc, fetched_from_email_accou
 
 	if not bcc:
 		bcc = get_bcc(doc, recipients, fetched_from_email_account=fetched_from_email_account)
-	
+
 	if fetched_from_email_account:
 		# email was already sent to the original recipient by the sender's email service
 		original_recipients, recipients = recipients, []
@@ -434,7 +434,7 @@ def filter_email_list(doc, email_list, exclude, is_cc=False, is_bcc=False):
 			is_user_enabled = frappe.db.get_value("User", email_address, "enabled")
 			if is_user_enabled==0:
 				continue
-		
+
 		# make sure of case-insensitive uniqueness of email address
 		if email_address not in email_address_list:
 			# append the full email i.e. "Human <human@example.com>"
