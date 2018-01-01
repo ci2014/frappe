@@ -111,6 +111,15 @@ frappe.ui.form.PrintPreview = Class.extend({
 			.val(this.lang_code);
 		this.preview();
 	},
+
+	set_default_print_language: function () {
+		this.default_print_language_code = 'de-rechnung';
+
+		this.language_sel.val(this.default_print_language_code);
+
+		this.preview();
+	},
+
 	multilingual_preview: function () {
 		var me = this;
 		if (this.is_old_style()) {
