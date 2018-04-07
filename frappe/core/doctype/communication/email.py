@@ -88,7 +88,7 @@ def make(doctype=None, name=None, content=None, subject=None, sent_or_received =
 	frappe.db.commit()
 
 	if cint(send_email):
-		frappe.flags.print_letterhead = print_letterhead
+		frappe.flags.print_letterhead = cint(print_letterhead)
 		comm.send(print_html, print_format, attachments, send_me_a_copy=send_me_a_copy)
 
 	return {
@@ -130,7 +130,7 @@ def notify(doc, print_html=None, print_format=None, attachments=None,
 	recipients, cc, bcc = get_recipients_cc_and_bcc(doc, recipients, cc, bcc,
 		fetched_from_email_account=fetched_from_email_account)
 
-	if not recipients:
+	if not recipients and not cc:
 		return
 
 	doc.emails_not_sent_to = set(doc.all_email_addresses) - set(doc.sent_email_addresses)
@@ -175,7 +175,7 @@ def _notify(doc, print_html=None, print_format=None, attachments=None,
 		communication=doc.name,
 		read_receipt=doc.read_receipt,
 		is_notification=True if doc.sent_or_received =="Received" else False,
-		print_letterhead=True if frappe.flags.print_letterhead=='true' else False
+		print_letterhead=frappe.flags.print_letterhead
 	)
 
 def update_parent_mins_to_first_response(doc):
@@ -372,11 +372,6 @@ def get_cc(doc, recipients=None, fetched_from_email_account=False):
 def get_bcc(doc, recipients=None, fetched_from_email_account=False):
 	"""Build a list of email addresses for BCC"""
 	bcc = split_emails(doc.bcc)
-
-	if doc.reference_doctype and doc.reference_name:
-		if fetched_from_email_account:
-			bcc.append(get_owner_email(doc))
-			bcc += get_assignees(doc)
 
 	if bcc:
 		exclude = []
